@@ -17,9 +17,9 @@ class CartItemRepository implements CartItemRepositoryInterface
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function all()
+    public function all($perPage = 5)
     {
-        return CartItem::all();
+        return CartItem::paginate($perPage);
     }
 
     /**

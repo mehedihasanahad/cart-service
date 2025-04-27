@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\CartItemController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\AuthController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -23,7 +25,7 @@ Route::prefix('v1')->group(function () {
     // protected routes
     // Route::middleware(['auth:api'])->group(function () {
         Route::apiResource('carts', CartController::class);
-        Route::apiResource('cart-items', CartController::class);
+        Route::apiResource('cart-items', CartItemController::class);
         Route::post('carts/{id}/checkout', [CartController::class, 'checkout']);
     // });
 });

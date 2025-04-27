@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\CartItemRepositoryInterface;
@@ -45,13 +45,17 @@ class CartItemController extends Controller
      */
     public function store(Request $request)
     {
+        // Validate the request data
         $validated = $request->validate([
             'cart_id' => 'required|exists:carts,id',
-            'product_id' => 'required|integer',
-            'quantity' => 'required|integer|min:1',
+            'service_id' => 'required|integer',
+            'scheduled_date' => 'required|date_format:Y-m-d',
+            'start_time' => 'required|date_format:Y-m-d H:i:s',
+            'end_time' => 'required|date_format:Y-m-d H:i:s|after:start_time',
             'price' => 'required|numeric|min:0',
         ]);
 
+        // Create a new cart item
         $cartItem = $this->cartItemRepository->create($validated);
         return new CartItemResource($cartItem);
     }
@@ -82,9 +86,12 @@ class CartItemController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // Validate the request data
         $validated = $request->validate([
-            'quantity' => 'sometimes|integer|min:1',
-            'price' => 'sometimes|numeric|min:0',
+            'scheduled_date' => 'date_format:Y-m-d',
+            'start_time' => 'date_format:Y-m-d H:i:s',
+            'end_time' => 'date_format:Y-m-d H:i:s|after:start_time',
+            'price' => 'numeric|min:0',
         ]);
 
         $this->cartItemRepository->update($id, $validated);
@@ -99,6 +106,15 @@ class CartItemController extends Controller
      */
     public function destroy($id)
     {
+        // Check if the cart item exists
+        $cartItem = $this->cartItemRepository->find($id);
+
+        // If not found, return a 404 response
+        if (!$cartItem) {
+            return response()->json(['message' => 'Cart item not found'], 404);
+        }
+
+        // Delete the cart item
         $this->cartItemRepository->delete($id);
         return response()->json(['message' => 'Cart item deleted successfully']);
     }

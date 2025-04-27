@@ -22,6 +22,7 @@ class CartItemResource extends JsonResource
         return [
             'id' => $this->id,
             'product_id' => $this->service_id,
+            'cart_id' => $this->cart_id,
             'start_time' => $this->start_time,
             'end_time' => $this->end_time,
             'price' => $this->price,

@@ -19,7 +19,7 @@ class CartRepository implements CartRepositoryInterface
      */
     public function all($page = 5)
     {
-        return Cart::with('items')->paginate($page);
+        return Cart::with('items')->where(['status' => 1])->paginate($page);
     }
 
     /**
@@ -77,6 +77,6 @@ class CartRepository implements CartRepositoryInterface
      */
     public function findByUserId($userId): ?Cart
     {
-        return Cart::where('user_id', $userId)->first();
+        return Cart::where(['user_id' => $userId, 'status' => 1])->first();
     }
 }

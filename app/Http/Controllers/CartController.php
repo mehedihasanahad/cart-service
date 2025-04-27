@@ -103,8 +103,8 @@ class CartController extends Controller
         // Checkout the cart using the CheckoutService
         $checkoutService->checkoutCart($cart);
 
-        // delete the cart after checkout
-        $this->cartRepository->delete($id);
+        // clear the cart after checkout
+        $this->cartRepository->update($id, ['status' => 0]);
 
         //TO::DO: Handle the response from the Order API and return appropriate response
 
