@@ -17,9 +17,9 @@ class CartRepository implements CartRepositoryInterface
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function all()
+    public function all($page = 5)
     {
-        return Cart::with('items')->get();
+        return Cart::with('items')->paginate($page);
     }
 
     /**
@@ -67,5 +67,16 @@ class CartRepository implements CartRepositoryInterface
     {
         $cart = Cart::findOrFail($id);
         return $cart->delete();
+    }
+
+    /**
+     * Checkout the cart by ID.
+     *
+     * @param  int  $id
+     * @return bool
+     */
+    public function findByUserId($userId): ?Cart
+    {
+        return Cart::where('user_id', $userId)->first();
     }
 }

@@ -35,12 +35,19 @@ class CartController extends Controller
      */
     public function store(Request $request)
     {
+        // Validate the request data
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
         ]);
 
+        // Check if the cart already exists for the user
+        if ($this->cartRepository->findByUserId($validated['user_id'])) {
+            return response()->json(['message' => 'Cart already exists for this user'], 422);
+        }
+
+        // Create a new cart
         $cart = $this->cartRepository->create($validated);
-        return new CartResource($cart);
+        return response()->json(['message' => 'Cart created for this user'], 200);
     }
 
     /**
@@ -64,6 +71,7 @@ class CartController extends Controller
     {
         $validated = $request->validate([
             'user_id' => 'sometimes|exists:users,id',
+            'status' => 'nullable|boolean',
         ]);
 
         $this->cartRepository->update($id, $validated);
@@ -84,13 +92,23 @@ class CartController extends Controller
      */
     public function checkout($id, CheckoutService $checkoutService)
     {
+        // Find the cart by ID
         $cart = $this->cartRepository->find($id);
 
+        // Check if the cart does not exist
         if (!$cart) {
             return response()->json(['message' => 'Cart not found'], 404);
         }
 
+        // Checkout the cart using the CheckoutService
         $checkoutService->checkoutCart($cart);
+
+        // delete the cart after checkout
+        $this->cartRepository->delete($id);
+
+        //TO::DO: Handle the response from the Order API and return appropriate response
+
+        //TO::DO: Push the order to the queue for notification and other processing
 
         return response()->json(['message' => 'Checkout initiated']);
     }

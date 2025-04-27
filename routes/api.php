@@ -23,6 +23,7 @@ Route::prefix('v1')->group(function () {
     // protected routes
     // Route::middleware(['auth:api'])->group(function () {
         Route::apiResource('carts', CartController::class);
+        Route::apiResource('cart-items', CartController::class);
         Route::post('carts/{id}/checkout', [CartController::class, 'checkout']);
     // });
 });
