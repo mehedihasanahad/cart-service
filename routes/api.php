@@ -23,9 +23,9 @@ Route::prefix('v1')->group(function () {
     Route::post('auth/login', [AuthController::class, 'login']);
 
     // protected routes
-    // Route::middleware(['auth:api'])->group(function () {
+    Route::middleware(['auth:api'])->group(function () {
         Route::apiResource('carts', CartController::class);
         Route::apiResource('cart-items', CartItemController::class);
         Route::post('carts/{id}/checkout', [CartController::class, 'checkout']);
-    // });
+    });
 });
